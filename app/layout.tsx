@@ -1,15 +1,20 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Rye } from 'next/font/google'
+import { Poppins } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'], 
+});
 
-import { headers } from 'next/headers' // added
+import { headers } from 'next/headers' 
 import ContextProvider from './context'
 
 export const metadata: Metadata = {
-  title: 'AppKit Example App',
-  description: 'Powered by Reown'
+  title: 'Dona',
+  description: 'Onchain support platform'
 }
 
 export default async function RootLayout({
@@ -23,7 +28,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className=" max-w-[1550px] w-full mx-auto ">
         <ContextProvider cookies={cookies}>{children}</ContextProvider>
       </body>
     </html>

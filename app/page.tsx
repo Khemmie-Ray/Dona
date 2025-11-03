@@ -1,21 +1,26 @@
 "use client";
 
 import React from "react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const Home = () => {
-  const { openConnectModal } = useConnectModal();
+ 
 
   return (
-    <>
-      <button
-        onClick={openConnectModal}
-        type="button"
-        className="bg-blue-500 p-4 rounded-xl block my-4"
-      >
-        Open Connect Modal
-      </button>
-    </>
+    <div>
+    <Header />
+     <section>
+      <div>
+        <h1></h1>
+        <p></p>
+      </div>
+      <div>
+        
+      </div>
+     </section>
+      <Footer />
+      </div>
   );
 };
 
