@@ -1,12 +1,16 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Rye } from 'next/font/google'
-import { Poppins } from 'next/font/google'
+import { Poppins, Rye } from 'next/font/google'
 import './globals.css'
 
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '600', '700'], 
+});
+
+const rye = Rye({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-rye',
 });
 
 import { headers } from 'next/headers' 
@@ -28,7 +32,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className=" max-w-[1550px] w-full mx-auto ">
+      <body className={`${poppins.className} ${rye.variable} max-w-[1550px] w-full mx-auto`}>
         <ContextProvider cookies={cookies}>{children}</ContextProvider>
       </body>
     </html>

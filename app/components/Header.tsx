@@ -9,24 +9,25 @@ import { useAppKitAccount } from "@reown/appkit/react";
 const Header = () => {
   const { openConnectModal } = useConnectModal();
   const { isConnected } = useAppKitAccount();
+  console.log(isConnected)
 
   return (
-    <header className="flex items-center w-[90%] mx-auto py-8 justify-between">
-      <h1 className="flex items-center">
+    <header className="flex items-center w-[90%] mx-auto py-8 justify-between border-b border-white/20">
+      <h1 className="flex items-center font-rye uppercase text-[20px]">
         <PiTipJarFill className="text-[#FFCB39] text-2xl" /> Dona
       </h1>
 
-      <nav className="flex justify-between items-center">
-        <Link href="/create" className="mr-6">Create</Link>
-        <Link href="/create" className="mr-6">View All</Link>
-        <Link href="/create">portfolio</Link>
-      </nav>
-      <button
+      {isConnected && <nav className="flex justify-between items-center w-1/3">
+        <Link href="/create">Create</Link>
+        <Link href="/create">View All</Link>
+        <Link href="/create">Portfolio</Link>
+      </nav>}
+      {!isConnected ? <button
         className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium"
         onClick={openConnectModal}
       >
         Connect Wallet
-      </button>
+      </button> : <w3m-button />}
     </header>
   );
 };
