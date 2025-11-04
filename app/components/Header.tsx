@@ -19,8 +19,8 @@ const Header = () => {
 
       {isConnected && <nav className="flex justify-between items-center w-1/3">
         <Link href="/create">Create</Link>
-        <Link href="/create">View All</Link>
-        <Link href="/create">Portfolio</Link>
+        <Link href="/viewAll" className="cursor-pointer">View All</Link>
+        <Link href="/portfolio">Portfolio</Link>
       </nav>}
       {!isConnected ? <button
         className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium"
