@@ -7,19 +7,25 @@ import { toast } from "sonner";
 import { ErrorDecoder } from "ethers-decode-error";
 
 const Create = () => {
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   const [userName, setUsername] = useState("");
   const errorDecoder = ErrorDecoder.create([abi]);
+  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
   const createJar = async () => {
     try {
-      writeContract({
+      const res = await writeContractAsync({
         abi,
-        address: "0x4a4369E2F1E07d97F3c97b81B8Ab60bE0cb3641a",
+        address: contractAddress,
         functionName: "createJar",
         args: [userName],
       });
-      toast.success("Jar created successfully!");
+      console.log(res)
+      if(res) {
+        toast.success("Jar created successfully!");
+      } else {
+      toast.error("Jar creation Failed!");
+      }
     } catch (err: any) {
       const decodedError = await errorDecoder.decode(err);
       toast.error(`Error creating jar - ${decodedError.reason}`, {

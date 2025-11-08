@@ -20,7 +20,7 @@ if (!projectId) {
 const metadata = {
   name: 'Dona',
   description: '',
-  url: 'https://appkitexampleapp.com', 
+  url: 'http://localhost:3000/', 
   icons: ['https://avatars.githubusercontent.com/u/179229932']
 }
 
