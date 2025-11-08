@@ -13,10 +13,12 @@
     "@reown/appkit": "^1.8.12",
     "@reown/appkit-adapter-wagmi": "^1.8.12",
     "@tanstack/react-query": "^5.90.6",
+    "ethers-decode-error": "^2.1.3",
     "next": "15.5",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
+    "sonner": "^2.0.7",
     "viem": "^2.38.6",
     "wagmi": "^2.19.2"
   },

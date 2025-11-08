@@ -3,6 +3,7 @@ import { Poppins, Rye } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { Toaster } from "sonner";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -39,7 +40,10 @@ export default async function RootLayout({
         <ContextProvider cookies={cookies}>
           <div className="flex justify-between flex-col h-screen  w-[90%] m-auto">
             <Header />
-            <div className="m-auto w-full">{children}</div>
+            <div className="m-auto w-full">
+              <Toaster richColors={true} position="top-right" />
+              {children}
+            </div>
             <div className="mt-auto">
               <Footer />
             </div>

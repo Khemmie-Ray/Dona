@@ -3,25 +3,30 @@
 import React, { useState } from "react";
 import { useWriteContract } from "wagmi";
 import abi from "@/app/constants/abi.json";
+import { toast } from "sonner";
+import { ErrorDecoder } from "ethers-decode-error";
 
 const Create = () => {
   const { writeContract } = useWriteContract();
   const [userName, setUsername] = useState("");
+  const errorDecoder = ErrorDecoder.create([abi]);
 
   const createJar = async () => {
     try {
-      await writeContract({
+      writeContract({
         abi,
         address: "0x4a4369E2F1E07d97F3c97b81B8Ab60bE0cb3641a",
         functionName: "createJar",
         args: [userName],
       });
-      console.log("Jar created successfully!");
-    } catch (err) {
-      console.error("Error creating jar:", err);
+      toast.success("Jar created successfully!");
+    } catch (err: any) {
+      const decodedError = await errorDecoder.decode(err);
+      toast.error(`Error creating jar - ${decodedError.reason}`, {
+        position: "top-center",
+      });
     }
   };
-
 
   return (
     <main className="w-full flex justify-between">
@@ -34,9 +39,10 @@ const Create = () => {
           placeholder="@0xhenchman"
           className="p-3 mb-6 border border-white/20 rounded-2xl"
         />
-        <button className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium" 
+        <button
+          className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium"
           onClick={createJar}
-          >
+        >
           Create Jar
         </button>
       </div>
