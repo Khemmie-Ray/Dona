@@ -17,7 +17,7 @@ const rye = Rye({
 });
 
 import { headers } from "next/headers";
-import ContextProvider from "./context";
+import { Providers } from "./context/Providers";
 
 export const metadata: Metadata = {
   title: "Dona",
@@ -37,7 +37,7 @@ export default async function RootLayout({
       <body
         className={`${poppins.className} ${rye.variable} max-w-[1550px] w-full mx-auto`}
       >
-        <ContextProvider cookies={cookies}>
+        <Providers>
           <div className="flex justify-between flex-col h-screen  w-[90%] m-auto">
             <Header />
             <div className="m-auto w-full">
@@ -48,7 +48,7 @@ export default async function RootLayout({
               <Footer />
             </div>
           </div>
-        </ContextProvider>
+        </Providers>
       </body>
     </html>
   );

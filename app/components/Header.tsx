@@ -4,11 +4,12 @@ import React from "react";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { PiTipJarFill } from "react-icons/pi";
 import Link from "next/link";
-import { useAppKitAccount } from "@reown/appkit/react";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Header = () => {
   const { openConnectModal } = useConnectModal();
-  const { isConnected } = useAppKitAccount();
+  const { isConnected } = useAccount();
   console.log(isConnected)
 
   return (
@@ -27,7 +28,7 @@ const Header = () => {
         onClick={openConnectModal}
       >
         Connect Wallet
-      </button> : <w3m-button />}
+      </button> : <ConnectButton />}
     </header>
   );
 };
