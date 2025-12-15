@@ -7,11 +7,11 @@ import {
 import abi from "@/constants/abi.json";
 import { toast } from "sonner";
 
-interface UseCreateJarOptions {
+interface UseCreateProfileOptions {
   onSuccess?: () => void;
 }
 
-export function useCreateJar(options?: UseCreateJarOptions) {
+const useCreateProfile = (options?: UseCreateProfileOptions) => {
   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
   const {
@@ -27,9 +27,9 @@ export function useCreateJar(options?: UseCreateJarOptions) {
     isSuccess: isConfirmed,
   } = useWaitForTransactionReceipt({ hash });
 
-  useEffect(() => {
+    useEffect(() => {
     if (isConfirmed) {
-      toast.success("Jar created successfully!");
+      toast.success("Profile created successfully!");
       options?.onSuccess?.();
     }
   }, [isConfirmed]);
@@ -41,20 +41,13 @@ export function useCreateJar(options?: UseCreateJarOptions) {
     }
   }, [writeError]);
 
-  const createJar = useCallback(
-    (userName: string) => {
-      const trimmed = userName.trim();
-
-      if (!trimmed) {
-        toast.error("Please enter a username");
-        return;
-      }
-
+  const createProfile = useCallback(
+    (userName: string, socials: string) => {
       writeContract({
         address: contractAddress,
         abi,
-        functionName: "createJar",
-        args: [trimmed],
+        functionName: "createProfile",
+        args: [userName, socials],
       });
     },
     [contractAddress, writeContract]
@@ -65,7 +58,7 @@ export function useCreateJar(options?: UseCreateJarOptions) {
   }, [resetWrite]);
 
   return {
-    createJar,
+    createProfile,
     isPending: isWritePending,    
     isConfirming,                 
     isLoading: isWritePending || isConfirming,
@@ -75,3 +68,5 @@ export function useCreateJar(options?: UseCreateJarOptions) {
     reset,
   };
 }
+
+export default useCreateProfile
