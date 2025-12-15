@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Poppins, Rye } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import Header from "../components/shared/Header";
+import Footer from "../components/shared/Footer";
 import { Toaster } from "sonner";
 
 const poppins = Poppins({
@@ -17,7 +17,7 @@ const rye = Rye({
 });
 
 import { headers } from "next/headers";
-import { Providers } from "./context/Providers";
+import { Providers } from "../context/Providers";
 
 export const metadata: Metadata = {
   title: "Dona",

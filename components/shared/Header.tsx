@@ -10,7 +10,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 const Header = () => {
   const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
-  console.log(isConnected)
 
   return (
     <header className="flex items-center w-[90%] mx-auto py-8 justify-between border-b border-white/20">

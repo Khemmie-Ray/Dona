@@ -1,6 +1,6 @@
 import React from 'react'
 import { useReadContracts } from 'wagmi'
-import abi from '@/app/constants/abi.json'
+import abi from '@/constants/abi.json'
 
 export
 

@@ -1,123 +1,70 @@
+// components/Create.tsx
 "use client";
 
 import React, { useState } from "react";
-import { 
-  useWriteContract, 
-  useWaitForTransactionReceipt,
-  useSimulateContract,
-  type BaseError 
-} from "wagmi";
-import { parseAbiItem } from "viem";
-import abi from "@/app/constants/abi.json";
-import { toast } from "sonner";
+import { useCreateJar } from "../../hooks/useCreate";
+import type { BaseError } from "wagmi";
 
 const Create = () => {
   const [userName, setUsername] = useState("");
-  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
-  // 1. SIMULATE CONTRACT CALL (Cost-free validation)
-  // This checks if the transaction would succeed WITHOUT spending gas
-  const { data: simulateData, error: simulateError } = useSimulateContract({
-    address: contractAddress,
-    abi,
-    functionName: "createJar",
-    args: [userName],
-    query: {
-      enabled: userName.length > 0, // Only simulate when username is entered
-    },
-  });
-
-  // 2. WRITE CONTRACT (Actual transaction)
-  const { 
-    data: hash, 
-    writeContract, 
-    isPending: isWritePending,
-    error: writeError 
-  } = useWriteContract();
-
-  // 3. WAIT FOR TRANSACTION CONFIRMATION
-  const { 
-    isLoading: isConfirming, 
-    isSuccess: isConfirmed 
-  } = useWaitForTransactionReceipt({
+  const {
+    createJar,
+    isPending,
+    isConfirming,
+    isLoading,
     hash,
+    error,
+  } = useCreateJar({
+    onSuccess: () => setUsername(""),
   });
 
-  // Handle transaction confirmation
-  React.useEffect(() => {
-    if (isConfirmed) {
-      toast.success("Jar created successfully!");
-      setUsername(""); // Clear input
-    }
-  }, [isConfirmed]);
-
-  // Handle errors
-  React.useEffect(() => {
-    if (writeError) {
-      toast.error(
-        `Error: ${(writeError as BaseError).shortMessage || writeError.message}`,
-        { position: "top-center" }
-      );
-    }
-  }, [writeError]);
-
-  const createJar = async () => {
-    if (!userName.trim()) {
-      toast.error("Please enter a username");
-      return;
-    }
-
-    // Check simulation before writing
-    if (simulateError) {
-      toast.error(`Transaction would fail: ${simulateError.message}`);
-      return;
-    }
-
-    try {
-      // Use the simulated request (includes gas estimation)
-      writeContract(simulateData!.request);
-    } catch (err) {
-      console.error("Transaction error:", err);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    createJar(userName);
   };
 
-  // Determine button state
-  const isLoading = isWritePending || isConfirming;
-  const isDisabled = isLoading || !userName.trim() || !!simulateError;
+  const getButtonText = () => {
+    if (isPending) return "Confirm in wallet...";
+    if (isConfirming) return "Creating jar...";
+    return "Create Jar";
+  };
 
   return (
     <main className="w-full flex justify-between">
-      <div className="rounded-[21px] p-8 flex flex-col w-full lg:w-[40%] md:w-[40%] shadow-2xl bg-[#FFF]/20">
-        <p className="mb-2">Enter a username</p>
+      <form
+        onSubmit={handleSubmit}
+        className="rounded-[21px] p-8 flex flex-col w-full lg:w-[40%] md:w-[40%] shadow-2xl bg-[#FFF]/20"
+      >
+        <label htmlFor="jar-username" className="mb-2">
+          Enter a username
+        </label>
         <input
+          id="jar-username"
           type="text"
           value={userName}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="@0xhenchman"
-          className="p-3 mb-6 border border-white/20 rounded-2xl"
+          className="p-3 mb-6 border border-white/20 rounded-2xl bg-transparent"
           disabled={isLoading}
         />
-        
-        {/* Show simulation error */}
-        {simulateError && userName && (
-          <p className="text-red-500 text-sm mb-2">
-            ⚠️ {(simulateError as BaseError).shortMessage}
+
+        {error && (
+          <p className="text-red-500 text-sm mb-4">
+            ⚠️ {(error as BaseError).shortMessage || error.message}
           </p>
         )}
 
         <button
+          type="submit"
           className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          onClick={createJar}
-          disabled={isDisabled}
+          disabled={isLoading || !userName.trim()}
         >
-          {isWritePending && "Confirm in wallet..."}
-          {isConfirming && "Creating jar..."}
-          {!isLoading && "Create Jar"}
+          {getButtonText()}
         </button>
-
-{/*       
+{/* 
         {hash && (
-          
+          <a
             href={`https://etherscan.io/tx/${hash}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -126,7 +73,7 @@ const Create = () => {
             View transaction →
           </a>
         )} */}
-      </div>
+      </form>
     </main>
   );
 };
