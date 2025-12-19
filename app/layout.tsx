@@ -17,7 +17,7 @@ const rye = Rye({
 });
 
 import { headers } from "next/headers";
-import { Providers } from "../context/Providers";
+import Providers from "@/context/Providers";
 
 export const metadata: Metadata = {
   title: "Dona",

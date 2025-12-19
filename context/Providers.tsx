@@ -30,7 +30,7 @@ if (!projectId) {
   throw new Error("Project ID is not defined");
 }
 
-export function Providers({ children }: { children: ReactNode }) {
+const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -39,3 +39,5 @@ export function Providers({ children }: { children: ReactNode }) {
     </WagmiProvider>
   );
 }
+
+export default Providers;

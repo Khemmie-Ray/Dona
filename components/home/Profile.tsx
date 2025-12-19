@@ -11,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useCreateProfile from "@/hooks/useCreateProfile";
 import { useState } from "react";
-import type { BaseError } from "wagmi";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
