@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useReadContract } from "wagmi";
-import abi from "@/app/constants/abi.json";
+import abi from '@/constants/abi.json'
 
 const ViewAll = () => {
   const contractAddress = process.env

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +6,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import useCreateProfile from "@/hooks/useCreateProfile";
 import { useState } from "react";
@@ -35,46 +33,48 @@ const Profile = () => {
   return (
     <Dialog>
         <DialogTrigger asChild>
-          <Button className="bg-[#FFCB39] hover:text-white py-4 px-6 w-full lg:w-[40%] md:w-[40%] rounded-lg text-[#0E1D20] font-medium">
+          <button className="bg-[#FFCB39] hover:text-white py-4 px-6 w-full lg:w-[40%] md:w-[40%] rounded-lg text-[#0E1D20] font-medium">
             Get Started
-          </Button>
+          </button>
         </DialogTrigger>
-        <DialogContent className="lg:w-[30%] md:w-[40%] w-full ">
+        <DialogContent className="lg:w-[30%] md:w-[40%] w-full border-0">
       <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle className="my-6">Create Profile</DialogTitle>
+            <DialogTitle className="my-6 t">Create Profile</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
               <Label htmlFor="username-1">Username</Label>
-              <Input
+              <input
                 id="username-1"
                 name="username"
                 placeholder="Stephen"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 disabled={isLoading}
+                className="p-3 rounded-lg mb-3 border-white/10 border"
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="handle">Social handle (Preferred one)</Label>
-              <Input
+              <Label htmlFor="handle" className="mb-1">Social handle (Preferred one)</Label>
+              <input
                 id="handle"
                 name="socialHandle"
                 placeholder="X/LinkedIn/Tiktok/Instagram"
                 value={socials}
                 onChange={(e) => setSocials(e.target.value)}
                 disabled={isLoading}
+                className="p-3 rounded-lg mb-3 border-white/10 border"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button
+            <button
               type="submit"
-              className="w-full bg-[#FFCB39] text-[#0E1D20] hover:text-white my-6"
+              className="w-full bg-[#FFCB39] text-[#0E1D20] hover:text-white my-6 p-3 rounded-lg"
             >
               {getButtonText()}
-            </Button>
+            </button>
           </DialogFooter>
       </form>
         </DialogContent>

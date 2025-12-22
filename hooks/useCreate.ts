@@ -1,77 +1,65 @@
-import { useCallback, useEffect } from "react";
-import {
-  useWriteContract,
-  useWaitForTransactionReceipt,
-  type BaseError,
-} from "wagmi";
-import abi from "@/constants/abi.json";
+"use client";
+
+import { useEffect } from "react";
 import { toast } from "sonner";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import abi from "@/constants/abi.json";
 
-interface UseCreateJarOptions {
-  onSuccess?: () => void;
-}
+export function useCreate() {
+  const contractAddress = process.env
+    .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
-export function useCreateJar(options?: UseCreateJarOptions) {
-  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
-
-  const {
-    data: hash,
-    writeContract,
-    isPending: isWritePending,
-    error: writeError,
-    reset: resetWrite,
+  const { 
+    writeContract, 
+    data: txHash, 
+    isPending: isWritePending, 
+    error: writeError 
   } = useWriteContract();
 
-  const {
-    isLoading: isConfirming,
-    isSuccess: isConfirmed,
-  } = useWaitForTransactionReceipt({ hash });
+  const { 
+    isLoading: isConfirming, 
+    isSuccess: isConfirmed 
+  } = useWaitForTransactionReceipt({ hash: txHash });
+
 
   useEffect(() => {
     if (isConfirmed) {
       toast.success("Jar created successfully!");
-      options?.onSuccess?.();
     }
   }, [isConfirmed]);
 
   useEffect(() => {
     if (writeError) {
-      const message = (writeError as BaseError).shortMessage || writeError.message;
-      toast.error(`Error: ${message}`, { position: "top-center" });
+      const errorMessage = 
+        (writeError as any).shortMessage || 
+        writeError.message || 
+        "Transaction failed";
+      
+      toast.error(`Error: ${errorMessage}`, {
+        position: "top-center",
+      });
     }
   }, [writeError]);
 
-  const createJar = useCallback(
-    (userName: string) => {
-      const trimmed = userName.trim();
+  const createJar = (title: string, description: string) => {
+    if (!title || !description) {
+      toast.error("Please enter a title and description");
+      return;
+    }
 
-      if (!trimmed) {
-        toast.error("Please enter a username");
-        return;
-      }
-
-      writeContract({
-        address: contractAddress,
-        abi,
-        functionName: "createJar",
-        args: [trimmed],
-      });
-    },
-    [contractAddress, writeContract]
-  );
-
-  const reset = useCallback(() => {
-    resetWrite();
-  }, [resetWrite]);
+    writeContract({
+      address: contractAddress,
+      abi,
+      functionName: "createJar",
+      args: [title, description],
+    });
+  };
 
   return {
     createJar,
-    isPending: isWritePending,    
-    isConfirming,                 
-    isLoading: isWritePending || isConfirming,
+    isPending: isWritePending || isConfirming,
     isSuccess: isConfirmed,
-    hash,
     error: writeError,
-    reset,
+    txHash,
   };
 }

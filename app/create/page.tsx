@@ -1,31 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
-import { useCreateJar } from "../../hooks/useCreate";
-import type { BaseError } from "wagmi";
+import React, { useState, useEffect } from "react";
+import { useCreate } from "@/hooks/useCreate";
 
 const Create = () => {
-  const [userName, setUsername] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const {
-    createJar,
-    isPending,
-    isConfirming,
-    isLoading,
-    hash,
-    error,
-  } = useCreateJar({
-    onSuccess: () => setUsername(""),
-  });
+  const { createJar, isPending, isSuccess, txHash } = useCreate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createJar(userName);
+    createJar(title, description);
+    setTitle("");
+    setDescription("");
   };
 
   const getButtonText = () => {
-    if (isPending) return "Confirm in wallet...";
-    if (isConfirming) return "Creating jar...";
+    if (isPending) return "loading...";
     return "Create Jar";
   };
 
@@ -35,43 +27,39 @@ const Create = () => {
         onSubmit={handleSubmit}
         className="rounded-[21px] p-8 flex flex-col w-full lg:w-[40%] md:w-[40%] shadow-2xl bg-[#FFF]/20"
       >
-        <label htmlFor="jar-username" className="mb-2">
-          Enter a username
-        </label>
-        <input
-          id="jar-username"
-          type="text"
-          value={userName}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="@0xhenchman"
-          className="p-3 mb-6 border border-white/20 rounded-2xl bg-transparent"
-          disabled={isLoading}
-        />
-
-        {error && (
-          <p className="text-red-500 text-sm mb-4">
-            ⚠️ {(error as BaseError).shortMessage || error.message}
-          </p>
-        )}
+        <div className="flex flex-col">
+          <label htmlFor="jar-username" className="mb-2">
+            Title
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter a title"
+            className="p-3 mb-6 border border-white/20 rounded-lg bg-transparent"
+            disabled={isPending}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="jar-username" className="mb-2">
+            Description
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="write a description"
+            className="p-3 mb-6 border border-white/20 rounded-lg bg-transparent h-32"
+            disabled={isPending}
+          />
+        </div>
 
         <button
           type="submit"
           className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isLoading || !userName.trim()}
+          disabled={isPending || !title || !description}
         >
           {getButtonText()}
         </button>
-{/* 
-        {hash && (
-          <a
-            href={`https://etherscan.io/tx/${hash}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 text-sm text-blue-400 hover:underline"
-          >
-            View transaction →
-          </a>
-        )} */}
       </form>
     </main>
   );
