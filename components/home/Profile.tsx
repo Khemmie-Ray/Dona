@@ -26,7 +26,7 @@ const Profile = () => {
 
   const getButtonText = () => {
     if (isPending) return "Confirm in wallet...";
-    if (isConfirming) return "Creating jar...";
+    if (isConfirming) return "Creating Profile...";
     return "Create Profile";
   };
 

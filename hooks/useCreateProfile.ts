@@ -2,17 +2,22 @@ import { useCallback, useEffect } from "react";
 import {
   useWriteContract,
   useWaitForTransactionReceipt,
+  useChainId,
   type BaseError,
 } from "wagmi";
 import abi from "@/constants/abi.json";
 import { toast } from "sonner";
+import { TIPJAR_ADDRESSES, isSupportedChain } from "@/constants/contract";
 
 interface UseCreateProfileOptions {
   onSuccess?: () => void;
 }
 
 const useCreateProfile = (options?: UseCreateProfileOptions) => {
-  const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
+  const chainId = useChainId();
+  console.log(chainId);
+  const contractAddress = chainId ? TIPJAR_ADDRESSES[chainId] : undefined;
+  console.log(contractAddress);
 
   const {
     data: hash,
@@ -22,12 +27,10 @@ const useCreateProfile = (options?: UseCreateProfileOptions) => {
     reset: resetWrite,
   } = useWriteContract();
 
-  const {
-    isLoading: isConfirming,
-    isSuccess: isConfirmed,
-  } = useWaitForTransactionReceipt({ hash });
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({ hash });
 
-    useEffect(() => {
+  useEffect(() => {
     if (isConfirmed) {
       toast.success("Profile created successfully!");
       options?.onSuccess?.();
@@ -36,13 +39,24 @@ const useCreateProfile = (options?: UseCreateProfileOptions) => {
 
   useEffect(() => {
     if (writeError) {
-      const message = (writeError as BaseError).shortMessage || writeError.message;
+      const message =
+        (writeError as BaseError).shortMessage || writeError.message;
       toast.error(`Error: ${message}`, { position: "top-center" });
     }
   }, [writeError]);
 
   const createProfile = useCallback(
     (userName: string, socials: string) => {
+      if (!contractAddress) {
+        toast.error("Please connect to a supported network");
+        return;
+      }
+
+      if (!isSupportedChain(chainId)) {
+        toast.error("Please switch to a supported network");
+        return;
+      }
+
       writeContract({
         address: contractAddress,
         abi,
@@ -59,14 +73,14 @@ const useCreateProfile = (options?: UseCreateProfileOptions) => {
 
   return {
     createProfile,
-    isPending: isWritePending,    
-    isConfirming,                 
+    isPending: isWritePending,
+    isConfirming,
     isLoading: isWritePending || isConfirming,
     isSuccess: isConfirmed,
     hash,
     error: writeError,
     reset,
   };
-}
+};
 
-export default useCreateProfile
+export default useCreateProfile;
