@@ -2,16 +2,14 @@
 
 import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
-import { baseSepolia, base } from "wagmi/chains";
+import { baseSepolia, base, sepolia, arbitrumSepolia } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactNode } from "react";
 import '@rainbow-me/rainbowkit/styles.css';
 
-// Set up queryClient
 const queryClient = new QueryClient();
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID!;
 
-// Set up metadata
 const metadata = {
   name: "Dona",
   description: "A decentralized tip jar project",
@@ -22,7 +20,7 @@ const metadata = {
 const config = getDefaultConfig({
   appName: "Dona",
   projectId,
-  chains: [baseSepolia, base],
+  chains: [baseSepolia, base, sepolia, arbitrumSepolia],
   ssr: true,
 });
 
