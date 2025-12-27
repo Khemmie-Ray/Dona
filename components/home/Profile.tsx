@@ -14,14 +14,14 @@ const Profile = () => {
   const [username, setUsername] = useState("");
   const [socials, setSocials] = useState("");
 
-  const { createProfile, isPending, isConfirming, isLoading, hash, error } =
-    useCreateProfile({
-      onSuccess: () => {setUsername(""), setSocials("")},
-    });
+  const { createProfile, isPending, isConfirming, isLoading } = useCreateProfile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     createProfile(username, socials);
+
+    setUsername("");
+    setSocials("");
   };
 
   const getButtonText = () => {
@@ -32,13 +32,13 @@ const Profile = () => {
 
   return (
     <Dialog>
-        <DialogTrigger asChild>
-          <button className="bg-[#FFCB39] hover:text-white py-4 px-6 w-full lg:w-[40%] md:w-[40%] rounded-lg text-[#0E1D20] font-medium">
-            Get Started
-          </button>
-        </DialogTrigger>
-        <DialogContent className="lg:w-[30%] md:w-[40%] w-full border-0">
-      <form onSubmit={handleSubmit}>
+      <DialogTrigger asChild>
+        <button className="bg-[#FFCB39] hover:text-white py-4 px-6 w-full lg:w-[40%] md:w-[40%] rounded-lg text-[#0E1D20] font-medium">
+          Get Started
+        </button>
+      </DialogTrigger>
+      <DialogContent className="lg:w-[30%] md:w-[40%] w-full border-0">
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle className="my-6 t">Create Profile</DialogTitle>
           </DialogHeader>
@@ -56,7 +56,9 @@ const Profile = () => {
               />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="handle" className="mb-1">Social handle (Preferred one)</Label>
+              <Label htmlFor="handle" className="mb-1">
+                Social handle (Preferred one)
+              </Label>
               <input
                 id="handle"
                 name="socialHandle"
@@ -76,8 +78,8 @@ const Profile = () => {
               {getButtonText()}
             </button>
           </DialogFooter>
-      </form>
-        </DialogContent>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
