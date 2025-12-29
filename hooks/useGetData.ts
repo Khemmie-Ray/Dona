@@ -2,6 +2,8 @@
 
 import { useReadContracts } from "wagmi";
 import abi from "@/constants/abi.json";
+import { useChainId } from "wagmi";
+import { TIPJAR_ADDRESSES, isSupportedChain } from "@/constants/contract";
 
 interface Jar {
   name: string;
@@ -19,46 +21,68 @@ interface Profile {
 }
 
 export function useGetData(address?: `0x${string}`) {
-  const contractAddress = process.env
-    .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
+  const chainId = useChainId();
+  const contractAddress = chainId ? TIPJAR_ADDRESSES[chainId] : undefined;
 
   const { data, isLoading, isError, error, refetch } = useReadContracts({
     contracts: [
       {
         address: contractAddress,
         abi,
-        functionName: "getJars",
+        functionName: "getUserCount",
+        args: [],
+      },
+      {
+        address: contractAddress,
+        abi,
+        functionName: "getTotalJarCount",
+        args: [],
+      },
+      {
+        address: contractAddress,
+        abi,
+        functionName: "getJarCount",
         args: [address],
       },
       {
         address: contractAddress,
         abi,
-        functionName: "getProfile",
+        functionName: "getAllJarsWithOwners",
+        args: [],
+      },
+      {
+        address: contractAddress,
+        abi,
+        functionName: "getUserProfile",
         args: [address],
       },
     ],
     query: {
       enabled: !!address,
-      staleTime: 30_000, 
-      refetchInterval: 60_000, 
-      refetchOnWindowFocus: true, 
-      retry: 3, 
+      staleTime: 30_000,
+      refetchInterval: 60_000,
+      refetchOnWindowFocus: true,
+      retry: 3,
     },
   });
 
-  const jars = (data?.[0]?.result as Jar[]) || [];
-  const profile = data?.[1]?.result as [string, boolean] | undefined;
+  const userCount = (data?.[0]?.result as bigint) || 0;
+  const totalJarCount = (data?.[1]?.result as bigint) || 0;
+  const jars = (data?.[2]?.result as Jar[]) || [];
+  const profileResult = data?.[3]?.result as [string, boolean] | undefined;
 
-  const profileData: Profile | null = profile
+  const profile: Profile | null = profileResult
     ? {
-        handle: profile[0],
-        exists: profile[1],
+        handle: profileResult[0],
+        exists: profileResult[1],
       }
     : null;
 
   return {
+    userCount: Number(userCount),
+    totalJarCount: Number(totalJarCount),
     jars,
-    profile: profileData,
+    profile,
     isLoading,
     isError,
     error,

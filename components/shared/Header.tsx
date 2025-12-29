@@ -12,7 +12,7 @@ const Header = () => {
   const { isConnected } = useAccount();
 
   return (
-    <header className="flex items-center w-[90%] mx-auto py-8 justify-between border-b border-white/20">
+    <header className="flex items-center w-[95%] mx-auto py-8 justify-between border-b border-white/20">
       <Link
         href="/"
         className="flex items-center font-rye uppercase text-[20px]"

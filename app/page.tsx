@@ -5,7 +5,7 @@ import Profile from "../components/home/Profile";
 
 const Home = () => {
   return (
-    <main className="">
+    <main className="w-[95%] mx-auto">
       <div className="w-full lg:w-[45%] md:w-[45%]">
         <h1 className="text-[24px] lg:text-[48px] md:text-[32px] font-bold mb-6">
           Your Work. Your Support. Your Control
