@@ -15,9 +15,7 @@ interface UseCreateProfileOptions {
 
 const useCreateProfile = (options?: UseCreateProfileOptions) => {
   const chainId = useChainId();
-  console.log(chainId);
   const contractAddress = chainId ? TIPJAR_ADDRESSES[chainId] : undefined;
-  console.log(contractAddress);
 
   const {
     data: hash,

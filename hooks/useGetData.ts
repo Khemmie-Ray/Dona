@@ -68,8 +68,9 @@ export function useGetData(address?: `0x${string}`) {
 
   const userCount = (data?.[0]?.result as bigint) || 0;
   const totalJarCount = (data?.[1]?.result as bigint) || 0;
-  const jars = (data?.[2]?.result as Jar[]) || [];
-  const profileResult = data?.[3]?.result as [string, boolean] | undefined;
+  const userjars = (data?.[2]?.result as Jar[]) || [];
+  const jars = (data?.[3]?.result as Jar[]) || [];
+  const profileResult = data?.[4]?.result as [string, boolean] | undefined;
 
   const profile: Profile | null = profileResult
     ? {
@@ -81,6 +82,7 @@ export function useGetData(address?: `0x${string}`) {
   return {
     userCount: Number(userCount),
     totalJarCount: Number(totalJarCount),
+    userjars,
     jars,
     profile,
     isLoading,

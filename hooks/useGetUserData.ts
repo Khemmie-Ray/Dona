@@ -1,7 +1,8 @@
 "use client";
 
-import { useReadContract } from "wagmi";
+import { useReadContract, useChainId } from "wagmi";
 import abi from "@/constants/abi.json";
+import { TIPJAR_ADDRESSES, isSupportedChain } from "@/constants/contract";
 
 interface Jar {
   name: string;
@@ -20,8 +21,8 @@ interface UserData {
 }
 
 export function useGetUserData(address?: `0x${string}`) {
-  const contractAddress = process.env
-    .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
+  const chainId = useChainId();
+  const contractAddress = chainId ? TIPJAR_ADDRESSES[chainId] : undefined;
 
   const { data, isLoading, isError, error, refetch } = useReadContract({
     address: contractAddress,

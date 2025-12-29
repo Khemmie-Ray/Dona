@@ -6,8 +6,8 @@ import { useAccount } from "wagmi";
 
 const ViewAll = () => {
   const { address } = useAccount()
-  const { jars, userCount, totalJarCount, profile, isLoading, isError, error, refetch } = useGetData(address);
-  console.log(jars)
+  const { jars, userCount, userjars, totalJarCount, profile, isLoading, isError, error, refetch } = useGetData(address);
+  console.log(jars, userCount, userjars)
 
 
 // active:true

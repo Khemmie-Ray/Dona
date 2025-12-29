@@ -8,13 +8,19 @@ const Create = () => {
   const [description, setDescription] = useState("");
 
   const { createJar, isPending, isSuccess, txHash } = useCreate();
+  console.log(isPending)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createJar(title, description);
-    setTitle("");
-    setDescription("");
+    createJar(title, description); 
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTitle("");
+      setDescription("");
+    }
+  }, [isSuccess]);
 
   const getButtonText = () => {
     if (isPending) return "loading...";
@@ -37,7 +43,6 @@ const Create = () => {
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter a title"
             className="p-3 mb-6 border border-white/20 rounded-lg bg-transparent"
-            disabled={isPending}
           />
         </div>
         <div className="flex flex-col">
@@ -49,7 +54,6 @@ const Create = () => {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="write a description"
             className="p-3 mb-6 border border-white/20 rounded-lg bg-transparent h-32"
-            disabled={isPending}
           />
         </div>
 
