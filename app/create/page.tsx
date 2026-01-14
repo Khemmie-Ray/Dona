@@ -7,24 +7,30 @@ const Create = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const { createJar, isPending, isSuccess, txHash } = useCreate();
-  console.log(isPending)
+  const { createJar, status, isWalletPending, isMining, isConfirmed, txHash } =
+    useCreate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createJar(title, description); 
+    createJar(title, description);
   };
 
   useEffect(() => {
-    if (isSuccess) {
-      setTitle("");
-      setDescription("");
+    if(isConfirmed) {
+      setTitle("")
+      setDescription("")
     }
-  }, [isSuccess]);
+  }, [isConfirmed])
 
   const getButtonText = () => {
-    if (isPending) return "loading...";
-    return "Create Jar";
+    switch (status) {
+      case "wallet":
+        return "Confirm in wallet...";
+      case "mining":
+        return "Creating jar...";
+      default:
+        return "Create Jar";
+    }
   };
 
   return (
@@ -60,7 +66,9 @@ const Create = () => {
         <button
           type="submit"
           className="bg-[#FFCB39] p-3 px-6 rounded-xl text-[#0E1D20] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={isPending || !title || !description}
+          disabled={
+            status === "wallet" || status === "mining" || !title || !description
+          }
         >
           {getButtonText()}
         </button>

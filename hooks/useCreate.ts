@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import {
   useWriteContract,
@@ -9,41 +9,59 @@ import {
 } from "wagmi";
 import { TIPJAR_ADDRESSES, isSupportedChain } from "@/constants/contract";
 import abi from "@/constants/abi.json";
-import { ErrorDecoder } from "ethers-decode-error";
 
 export function useCreate() {
   const chainId = useChainId();
-  const contractAddress = chainId ? TIPJAR_ADDRESSES[chainId] : undefined;
-  const errorDecoder = ErrorDecoder.create([abi]);
+  const contractAddress = chainId
+    ? TIPJAR_ADDRESSES[chainId]
+    : undefined;
 
   const {
     writeContract,
     data: txHash,
-    isPending: isWritePending,
+    isPending: isWalletPending,
     error: writeError,
+    reset: resetWrite,
   } = useWriteContract();
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({ hash: txHash });
+  const {
+    isLoading: isMining,
+    isSuccess: isConfirmed,
+    isError: isReceiptError,
+    error: receiptError,
+  } = useWaitForTransactionReceipt({
+    hash: txHash,
+    query: {
+      enabled: !!txHash,
+    },
+  });
 
   useEffect(() => {
     if (isConfirmed) {
       toast.success("Jar created successfully!");
+      resetWrite();
     }
-  }, [isConfirmed]);
+  }, [isConfirmed, resetWrite]);
 
   useEffect(() => {
-    if (writeError) {
-      const errorMessage =
-        (writeError as any).shortMessage ||
-        writeError.message ||
-        "Transaction failed";
+    if (!writeError) return;
 
-      toast.error(`Error: ${errorMessage}`, {
-        position: "top-center",
-      });
-    }
+    const message =
+      (writeError as any).shortMessage ||
+      writeError.message ||
+      "Transaction failed";
+
+    toast.error(message, { position: "top-center" });
   }, [writeError]);
+
+  useEffect(() => {
+    if (!isReceiptError || !receiptError) return;
+
+    toast.error(
+      receiptError.message || "Transaction reverted",
+      { position: "top-center" }
+    );
+  }, [isReceiptError, receiptError]);
 
   const createJar = (title: string, description: string) => {
     if (!title || !description) {
@@ -52,7 +70,7 @@ export function useCreate() {
     }
 
     if (!contractAddress) {
-      toast.error("Please connect to a supported network");
+      toast.error("Contract not found for this network");
       return;
     }
 
@@ -69,11 +87,27 @@ export function useCreate() {
     });
   };
 
+  const status = useMemo(() => {
+    if (isWalletPending) return "wallet";
+    if (isMining) return "mining";
+    if (isConfirmed) return "success";
+    if (writeError || isReceiptError) return "error";
+    return "idle";
+  }, [
+    isWalletPending,
+    isMining,
+    isConfirmed,
+    writeError,
+    isReceiptError,
+  ]);
+
   return {
     createJar,
-    isPending: isWritePending || isConfirming,
-    isSuccess: isConfirmed,
-    error: writeError,
     txHash,
+    isWalletPending,
+    isMining,
+    isConfirmed,
+    status,
+    error: writeError || receiptError,
   };
 }

@@ -6,8 +6,8 @@ import { useAccount } from "wagmi";
 
 const ViewAll = () => {
   const { address } = useAccount()
-  const { jars, userCount, userjars, totalJarCount, profile, isLoading, isError, error, refetch } = useGetData(address);
-  console.log(jars, userCount, userjars)
+  const { jars, userCount, userjars, totalJarCount, isLoading, isError, error, refetch } = useGetData(address);
+  console.log("All jars:", jars, "users", userCount, "jar", userjars, "all jar count", totalJarCount)
 
 
 // active:true
@@ -39,14 +39,14 @@ const ViewAll = () => {
                   Owner: {jar.owner?.slice(0, 6)}...{jar.owner?.slice(-4)}
                 </p>
               </div>
-              <a
+              {/* <a
                 href={`https://etherscan.io/address/${jar.jarAddress}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#FFCB39] text-sm underline"
               >
                 View
-              </a>
+              </a> */}
             </div>
           ))}
         </div>
